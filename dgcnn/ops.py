@@ -43,7 +43,7 @@ def edge_conv(point_cloud, k, num_filters, trainable, activation=tf.nn.relu, deb
 
   net = point_cloud
   net = edges(net, k=k)
-  if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+  if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
   net = slim.conv2d(inputs      = net,
                     num_outputs = num_filters,
                     kernel_size = 1,
@@ -52,13 +52,13 @@ def edge_conv(point_cloud, k, num_filters, trainable, activation=tf.nn.relu, deb
                     padding     = 'VALID',
                     normalizer_fn = slim.batch_norm,
                     scope       = 'conv0')
-  if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+  if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
   net_max  = tf.reduce_max  (net, axis=-2, keepdims=True)
   net_mean = tf.reduce_mean (net, axis=-2, keepdims=True)
   net = tf.concat([net_max, net_mean], axis=-1)
-  if debug: print('Shape {:s} ... Name {:s}'.format(net_max.shape,net_max.name))
-  if debug: print('Shape {:s} ... Name {:s}'.format(net_mean.shape,net_mean.name))
-  if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+  if debug: print('Shape {}\t... Name {}'.format(net_max.shape,net_max.name))
+  if debug: print('Shape {}\t... Name {}'.format(net_mean.shape,net_mean.name))
+  if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
   net = slim.conv2d(inputs      = net,
                     num_outputs = 64,
                     kernel_size = 1,
@@ -68,7 +68,7 @@ def edge_conv(point_cloud, k, num_filters, trainable, activation=tf.nn.relu, deb
                     normalizer_fn = slim.batch_norm,
                     activation_fn = activation,
                     scope       = 'conv1')
-  if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+  if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
   
   return [net_max, net_mean, net]
 
@@ -158,6 +158,6 @@ def fc(net, repeat, num_filters, trainable, debug=False):
                       padding     = 'VALID',
                       normalizer_fn = slim.batch_norm,
                       scope       = scope)
-    if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+    if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
 
   return net

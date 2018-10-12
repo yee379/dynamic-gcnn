@@ -3,6 +3,8 @@ import numpy as np
 import argparse, os, sys
 from main_funcs import train, iotest, inference
 from distutils.util import strtobool
+import six
+
 class DGCNN_FLAGS:
 
     # flags for model
@@ -143,7 +145,7 @@ class DGCNN_FLAGS:
         args.func(self)
                     
     def update(self, args):
-        for name,value in args.iteritems():
+        for name,value in six.iteritems(args):
             if name in ['func','script']: continue
             setattr(self, name.upper(), args[name])
         os.environ['CUDA_VISIBLE_DEVICES']=self.GPUS

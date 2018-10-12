@@ -22,7 +22,7 @@ def build(point_cloud, flags):
   num_point = tf.shape(net)[1]
   if debug:
     print('\n')
-    print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+    print('Shape {}\t... Name {}'.format(net.shape,net.name))
 
   if flags.MODEL_NAME == 'dgcnn':
     tensors = dgcnn.ops.repeat_edge_conv(net,
@@ -51,10 +51,10 @@ def build(point_cloud, flags):
                       padding     = 'VALID',
                       normalizer_fn = slim.batch_norm,
                       scope       = 'Final')
-    if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+    if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
     
     net = tf.squeeze(net, axis=-2)
-    if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+    if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
     return net
     
   concat = []
@@ -70,26 +70,26 @@ def build(point_cloud, flags):
                     padding     = 'VALID',
                     normalizer_fn = slim.batch_norm,
                     scope       = 'MergedEdgeConv')
-  if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+  if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
   tensors.append(net)
 
   from tensorflow.python.ops import gen_nn_ops
   net = gen_nn_ops.max_pool_v2(net, ksize=[1,num_point,1,1], strides=[1,1,1,1], padding='VALID', name='maxpool0')
-  if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+  if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
 
   net = tf.reshape(net,[batch_size,-1,1,1024])
   net  = tf.tile(net, [1, num_point, 1, 1])
-  if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+  if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
   concat = [net] + tensors
 
   net = tf.concat(values=concat, axis=3)
-  if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+  if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
 
   net = dgcnn.ops.fc(net=net, repeat=num_fc, num_filters=num_fc_filters, trainable=is_training, debug=debug)
 
   if is_training:
     net = tf.nn.dropout(net, 0.7, None)
-    if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+    if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
 
   net = slim.conv2d(inputs      = net,
                     num_outputs = num_class,
@@ -99,9 +99,9 @@ def build(point_cloud, flags):
                     padding     = 'VALID',
                     normalizer_fn = slim.batch_norm,
                     scope       = 'Final')
-  if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+  if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
   
   net = tf.squeeze(net, axis=-2)
-  if debug: print('Shape {:s} ... Name {:s}'.format(net.shape,net.name))
+  if debug: print('Shape {}\t... Name {}'.format(net.shape,net.name))
   return net
 
